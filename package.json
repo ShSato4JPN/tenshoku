@@ -3,18 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky",
     "prisma:generate": "prisma generate --schema=./packages/db/schema.prisma"
   },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "dependencies": {
     "@neondatabase/serverless": "0.10.4",
     "@prisma/client": "6.5.0",
     "biome": "0.3.3",
     "next": "15.2.2",
+    "next-auth": "5.0.0-beta.25",
     "prisma": "6.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -30,6 +34,7 @@
     "husky": "9.1.7",
     "lint-staged": "15.5.0",
     "tailwindcss": "^4",
+    "ts-node": "10.9.2",
     "typescript": "^5"
   }
 }
