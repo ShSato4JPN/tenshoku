@@ -7,11 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "prisma:generate": "prisma generate --schema=./packages/db/schema.prisma"
   },
   "dependencies": {
+    "@neondatabase/serverless": "0.10.4",
+    "@prisma/client": "6.5.0",
     "biome": "0.3.3",
     "next": "15.2.2",
+    "prisma": "6.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
