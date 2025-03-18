@@ -1,14 +1,24 @@
-"use client";
-import { login } from "@/libs/actions/auth";
+"use server";
+import { auth } from "@/auth";
+import Link from "next/link";
+import { SignInButton } from "./components/sign-in-button";
+import { SignOutButton } from "./components/sign-out-button";
 
 export default async function Home() {
-  //const session = await auth();
-  //console.log(session);
+  const session = await auth();
+  if (session?.user) {
+    return (
+      <div>
+        <Link href="/user-info">User Info</Link>
+        <SignOutButton />
+      </div>
+    );
+  }
+
   return (
     <div>
-      <button type="button" onClick={() => login()}>
-        sign in with Github
-      </button>
+      <p>You Are Not Signed In</p>
+      <SignInButton />
     </div>
   );
 }
