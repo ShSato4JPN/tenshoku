@@ -1,24 +1,26 @@
-"use server";
-import { auth } from "@/auth";
-import Link from "next/link";
-import { SignInButton } from "./components/sign-in-button";
-import { SignOutButton } from "./components/sign-out-button";
+"use client";
 
-export default async function Home() {
-  const session = await auth();
-  if (session?.user) {
-    return (
-      <div>
-        <Link href="/user-info">User Info</Link>
-        <SignOutButton />
-      </div>
-    );
-  }
+import { Button } from "@/components/ui/button";
+import { useRef } from "react";
+
+export default function Home() {
+  const ref = useRef<HTMLButtonElement>(null);
 
   return (
     <div>
       <p>You Are Not Signed In</p>
-      <SignInButton />
+      <Button
+        ref={ref}
+        variant={"outline"}
+        className="bg-orange-500"
+        onClick={() => alert("hello")}
+      >
+        Click
+      </Button>
+
+      <Button variant={"outline"} onClick={() => ref.current?.focus()}>
+        move focus
+      </Button>
     </div>
   );
 }
