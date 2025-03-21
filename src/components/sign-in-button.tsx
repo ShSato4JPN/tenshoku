@@ -1,6 +1,6 @@
 "use client";
 
-import { login } from "@/libs/actions/auth";
+import { login } from "@/lib/actions/auth";
 
 export const SignInButton = () => {
   return (

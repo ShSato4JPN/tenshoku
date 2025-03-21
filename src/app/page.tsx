@@ -9,12 +9,7 @@ export default function Home() {
   return (
     <div>
       <p>You Are Not Signed In</p>
-      <Button
-        ref={ref}
-        variant={"outline"}
-        className="bg-orange-500"
-        onClick={() => alert("hello")}
-      >
+      <Button ref={ref} variant={"outline"} onClick={() => alert("hello")}>
         Click
       </Button>
 
