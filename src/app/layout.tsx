@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AppProvider } from "./provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,12 +23,23 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // サーバー上でプリフェッチしたデータをクライアントに渡す
+  // const queryClient = new QueryClient();
+
+  // await queryClient.prefetchQuery("todos", () =>;
+
+  // const dehydratedState = dehydrate(queryClient);
+
   return (
-    <html lang="en">
+    <html lang="ja">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <AppProvider>
+          {/* <HydrationBoundary dehydratedState={dehydratedState}> */}
+          {children}
+          {/* </HydrationBoundary> */}
+        </AppProvider>
       </body>
     </html>
   );
