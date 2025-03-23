@@ -2,42 +2,28 @@ import { type Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const userData: Prisma.UserCreateInput[] = [
+const statusData: Prisma.StatusCreateInput[] = [
   {
-    name: "Alice",
-    email: "alice@prisma.io",
-    posts: {
-      create: [
-        {
-          title: "Join the Prisma Discord",
-          content: "https://pris.ly/discord",
-          published: true,
-        },
-        {
-          title: "Prisma on YouTube",
-          content: "https://pris.ly/youtube",
-        },
-      ],
-    },
+    id: "WAITING",
+    value: "待機中",
   },
   {
-    name: "Bob",
-    email: "bob@prisma.io",
-    posts: {
-      create: [
-        {
-          title: "Follow Prisma on Twitter",
-          content: "https://www.twitter.com/prisma",
-          published: true,
-        },
-      ],
-    },
+    id: "PROGRESS",
+    value: "進行中",
+  },
+  {
+    id: "DONE",
+    value: "完了",
+  },
+  {
+    id: "DECLINED",
+    value: "辞退",
   },
 ];
 
 export async function main() {
-  for (const u of userData) {
-    await prisma.user.create({ data: u });
+  for (const u of statusData) {
+    await prisma.status.create({ data: u });
   }
 }
 

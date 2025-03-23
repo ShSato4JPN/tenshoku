@@ -5,7 +5,7 @@ import authConfig from "../auth.config";
 
 const { auth } = NextAuth(authConfig);
 
-const protectedRoutes = ["/user-info"];
+const protectedRoutes = ["/app"];
 
 export default async function middleware(req: NextRequest) {
   const session = await auth();
@@ -15,7 +15,7 @@ export default async function middleware(req: NextRequest) {
   );
 
   if (isProtected && !session) {
-    return NextResponse.redirect(new URL("/api/auth/signin", req.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();
