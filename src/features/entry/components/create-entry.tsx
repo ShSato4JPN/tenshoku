@@ -14,41 +14,16 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { createEntryInputSchema } from "../api/create-entry";
 
 export default function CreateEntry() {
-  const formSchema = z.object({
-    name: z.string().nonempty({ message: "企業名を入力してください" }),
-    employees: z.string().refine(
-      (value) => {
-        value.replace(/,/g, "").match(/^\d+$/) !== null;
-      },
-      { message: "社員数は数値で入力してください" },
-    ),
-    capital: z.string().refine(
-      (value) => {
-        value.replace(/,/g, "").match(/^\d+$/) !== null;
-      },
-      { message: "資本金は数値で入力してください" },
-    ),
-    link: z.string().url({ message: "URLが正しくありません" }),
-    memo: z.string().optional(),
-  });
-
   const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      employees: "",
-      capital: "",
-      link: "",
-      memo: "",
-    },
+    resolver: zodResolver(createEntryInputSchema),
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    alert(values);
-  }
+  const onSubmit = form.handleSubmit(async (data) => {
+    alert(JSON.stringify(data, null, 2));
+  });
 
   return (
     <>
@@ -56,15 +31,16 @@ export default function CreateEntry() {
         title="新規登録"
         description="企業の情報を入力してください"
         triggerButton={<Button>企業を登録する</Button>}
+        onClose={() => form.reset()}
       >
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={onSubmit} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>企業名</FormLabel>
+                  <FormLabel>※ 企業名</FormLabel>
                   <FormControl>
                     <Input type="text" {...field} />
                   </FormControl>
@@ -79,7 +55,19 @@ export default function CreateEntry() {
                 <FormItem>
                   <FormLabel>社員数</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input
+                      type="text"
+                      {...field}
+                      onBlur={(e) => {
+                        // Format the input value as a number.
+                        const value = e.target.value
+                          .replace(/,/g, "")
+                          .replace(/(\d)(?=(\d{3})+$)/g, "$1,");
+                        form.setValue("employees", value, {
+                          shouldValidate: true,
+                        });
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -97,10 +85,9 @@ export default function CreateEntry() {
                       {...field}
                       onBlur={(e) => {
                         // Format the input value as a number.
-                        const value = e.target.value.replace(
-                          /(\d)(?=(\d{3})+$)/g,
-                          "$1,",
-                        );
+                        const value = e.target.value
+                          .replace(/,/g, "")
+                          .replace(/(\d)(?=(\d{3})+$)/g, "$1,");
                         form.setValue("capital", value, {
                           shouldValidate: true,
                         });

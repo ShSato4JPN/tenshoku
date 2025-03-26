@@ -1,4 +1,4 @@
-import type { DefaultOptions } from "@tanstack/react-query";
+import type { DefaultOptions, UseMutationOptions } from "@tanstack/react-query";
 
 export const queryConfig = {
   queries: {
@@ -7,3 +7,22 @@ export const queryConfig = {
     staleTime: 1000 * 60,
   },
 } satisfies DefaultOptions;
+
+// biome-ignore lint: any を許容する
+export type ApiFnReturnTYpe<FnType extends (...args: any) => Promise<any>> =
+  Awaited<ReturnType<FnType>>;
+
+// biome-ignore lint: any を許容する
+export type QueryConfig<T extends (...args: any[]) => any> = Omit<
+  ReturnType<T>,
+  "queryKey" | "queryFn"
+>;
+
+export type MutationConfig<
+  // biome-ignore lint: any を許容する
+  MutationFnType extends (...args: any) => Promise<any>,
+> = UseMutationOptions<
+  ApiFnReturnTYpe<MutationFnType>,
+  Error,
+  Parameters<MutationFnType>[0]
+>;
