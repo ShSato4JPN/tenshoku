@@ -1,9 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { z } from "zod";
-
 import type { MutationConfig } from "@/lib/react-query";
 import type { Company } from "@prisma/client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { z } from "zod";
 import { getEntiresOptions } from "./get-entries";
 
 export const createEntryInputSchema = z.object({
@@ -43,16 +42,20 @@ export const createEntry = ({
 }: {
   data: CreateEntryInput;
 }): Promise<Company> => {
-  return axios.post("/api/entries", data);
+  return axios.post(`${process.env.NEXT_PUBLIC_URL}/api/entries`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
 
-type UseCreateDiscussionOptions = {
+type UseCreateEntryOptions = {
   mutationConfig?: MutationConfig<typeof createEntry>;
 };
 
-export const useCreateDiscussion = ({
+export const useCreateEntry = ({
   mutationConfig,
-}: UseCreateDiscussionOptions = {}) => {
+}: UseCreateEntryOptions = {}) => {
   const queryClient = useQueryClient();
 
   const { onSuccess, ...restConfig } = mutationConfig || {};

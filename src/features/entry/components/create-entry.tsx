@@ -13,16 +13,28 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
+import * as React from "react";
 import { useForm } from "react-hook-form";
 import { createEntryInputSchema } from "../api/create-entry";
+import { useCreateEntry } from "../api/create-entry";
 
 export default function CreateEntry() {
+  const [open, setOpen] = React.useState(false);
+
+  const createEntryMutation = useCreateEntry({
+    mutationConfig: {
+      onSuccess: () => {
+        alert("登録しました");
+      },
+    },
+  });
+
   const form = useForm({
     resolver: zodResolver(createEntryInputSchema),
   });
 
-  const onSubmit = form.handleSubmit(async (data) => {
-    alert(JSON.stringify(data, null, 2));
+  const onSubmit = form.handleSubmit(async (values) => {
+    createEntryMutation.mutate({ data: values });
   });
 
   return (
@@ -31,6 +43,8 @@ export default function CreateEntry() {
         title="新規登録"
         description="企業の情報を入力してください"
         triggerButton={<Button>企業を登録する</Button>}
+        open={open}
+        setOpen={() => setOpen((v) => !v)}
         onClose={() => form.reset()}
       >
         <Form {...form}>
@@ -59,7 +73,6 @@ export default function CreateEntry() {
                       type="text"
                       {...field}
                       onBlur={(e) => {
-                        // Format the input value as a number.
                         const value = e.target.value
                           .replace(/,/g, "")
                           .replace(/(\d)(?=(\d{3})+$)/g, "$1,");
@@ -84,7 +97,6 @@ export default function CreateEntry() {
                       type="text"
                       {...field}
                       onBlur={(e) => {
-                        // Format the input value as a number.
                         const value = e.target.value
                           .replace(/,/g, "")
                           .replace(/(\d)(?=(\d{3})+$)/g, "$1,");
@@ -124,7 +136,11 @@ export default function CreateEntry() {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">
+            <Button
+              className="w-full"
+              type="submit"
+              isLoading={createEntryMutation.isPending}
+            >
               登録する
             </Button>
           </form>

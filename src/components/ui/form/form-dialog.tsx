@@ -14,6 +14,8 @@ type FormDialogProps = {
   description?: string;
   triggerButton: React.ReactElement;
   children: React.ReactNode;
+  open: boolean;
+  setOpen: () => void;
   onClose?: () => void;
 };
 
@@ -22,10 +24,18 @@ export function FormDialog({
   description,
   triggerButton,
   children,
+  open,
+  setOpen,
   onClose,
 }: FormDialogProps) {
   return (
-    <Dialog onOpenChange={(isOpen) => !isOpen && onClose?.()}>
+    <Dialog
+      onOpenChange={() => {
+        setOpen();
+        onClose?.();
+      }}
+      open={open}
+    >
       <DialogTrigger asChild>{triggerButton}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
