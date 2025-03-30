@@ -1,17 +1,30 @@
-import { auth } from "@/auth";
 import { getUser } from "@/lib/auth";
 import { prisma } from "@/prisma";
 import { type NextRequest, NextResponse } from "next/server";
 import { zfd } from "zod-form-data";
 
 export async function GET(_: NextRequest) {
-  const user = await auth();
+  const user = await getUser();
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  return NextResponse.json(user, { status: 200 });
+  try {
+    const entries = await prisma.company.findMany({
+      where: {
+        registerId: user.id as string,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return NextResponse.json({ entries }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: error }, { status: 400 });
+  }
 }
 
 export async function POST(req: Request) {
@@ -40,7 +53,7 @@ export async function POST(req: Request) {
       memo: formData.get("memo"),
     });
 
-    const company = await prisma.company.create({
+    const entry = await prisma.company.create({
       data: {
         registerId: user.id as string,
         name,
@@ -51,7 +64,7 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json({ success: true, data: company }, { status: 201 });
+    return NextResponse.json({ success: true, data: entry }, { status: 201 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: error }, { status: 400 });

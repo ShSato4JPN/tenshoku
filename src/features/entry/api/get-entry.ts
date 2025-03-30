@@ -1,31 +1,30 @@
+import type { QueryConfig } from "@/lib/react-query";
+import type { Company } from "@prisma/client";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-export const getEntries = (
-  { page }: { page?: number } = { page: 1 },
-): Promise<{
-  entries: {
-    id: number;
-    name: string;
-    employees: number;
-    capital: number;
-  }[];
-  totalCount: number;
-}> => {
-  return axios.get("/api/entries", { params: { page } });
+export const getEntry = async (
+  entryId: string,
+): Promise<{ entry: Company; totalCount: number }> => {
+  const { data } = await axios.get(
+    `${process.env.NEXT_PUBLIC_URL}/api/entries/${entryId}`,
+  );
+
+  return data;
 };
 
-export const getEntiresOptions = ({ page = 1 }: { page?: number } = {}) => {
+export const getEntryQueryOptions = (entryId: string) => {
   return queryOptions({
-    queryKey: ["entries", { page }],
-    queryFn: () => getEntries({ page }),
+    queryKey: ["entry", entryId],
+    queryFn: async () => await getEntry(entryId),
   });
 };
 
-type UseEntriesOptions = {
-  page?: number;
+type UseEntryOptions = {
+  entryId: string;
+  queryConfig?: QueryConfig<typeof getEntryQueryOptions>;
 };
 
-export const useEntries = ({ page }: UseEntriesOptions) => {
-  return useQuery({ ...getEntiresOptions({ page }) });
+export const useEntry = ({ entryId, queryConfig }: UseEntryOptions) => {
+  return useQuery({ ...getEntryQueryOptions(entryId), ...queryConfig });
 };

@@ -1,11 +1,11 @@
 import Main from "@/components/errors/main";
 import { ErrorBoundary } from "react-error-boundary";
-import Entry from "./_components/entry";
+import Entries from "./_components/entry";
 
-export default function EntryPage() {
+export default function EntriesPage() {
   return (
     <ErrorBoundary fallback={<Main />}>
-      <Entry />
+      <Entries />
     </ErrorBoundary>
   );
 }

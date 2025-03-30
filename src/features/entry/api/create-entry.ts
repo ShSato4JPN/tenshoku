@@ -3,7 +3,7 @@ import type { Company } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { z } from "zod";
-import { getEntiresOptions } from "./get-entries";
+import { getEntiresQueryOptions } from "./get-entries";
 
 export const createEntryInputSchema = z.object({
   name: z
@@ -63,7 +63,7 @@ export const useCreateEntry = ({
   return useMutation({
     onSuccess: (...args) => {
       queryClient.invalidateQueries({
-        queryKey: getEntiresOptions().queryKey,
+        queryKey: getEntiresQueryOptions().queryKey,
       });
       onSuccess?.(...args);
     },

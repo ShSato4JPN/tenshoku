@@ -17,8 +17,11 @@ export const paths = {
     home: {
       getHref: () => "/app",
     },
+    entries: {
+      getHref: () => "/app/entries",
+    },
     entry: {
-      getHref: () => "/app/entry",
+      getHref: (id: string) => `/app/entries/${id}`,
     },
     calendar: {
       getHref: () => "/app/calendar",

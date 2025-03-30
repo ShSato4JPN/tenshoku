@@ -1,31 +1,35 @@
+import type { QueryConfig } from "@/lib/react-query";
+import type { Company } from "@prisma/client";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-export const getEntries = (
+export const getEntries = async (
   { page }: { page?: number } = { page: 1 },
-): Promise<{
-  entries: {
-    id: number;
-    name: string;
-    employees: number;
-    capital: number;
-  }[];
-  totalCount: number;
-}> => {
-  return axios.get("/api/entries", { params: { page } });
+): Promise<{ entries: Company[] }> => {
+  const { data } = await axios.get(
+    `${process.env.NEXT_PUBLIC_URL}/api/entries`,
+    { params: { page } },
+  );
+
+  return data;
 };
 
-export const getEntiresOptions = ({ page = 1 }: { page?: number } = {}) => {
+// キャッシュを高効率よく管理するために定義場所を限定させる作り
+export const getEntiresQueryOptions = ({
+  page = 1,
+}: { page?: number } = {}) => {
   return queryOptions({
     queryKey: ["entries", { page }],
-    queryFn: () => getEntries({ page }),
+    queryFn: async () => await getEntries({ page }),
   });
 };
 
+// 外部から設定できるのは queryKey, queryFn 以外のオプション
 type UseEntriesOptions = {
   page?: number;
+  queryConfig?: QueryConfig<typeof getEntiresQueryOptions>;
 };
 
-export const useEntries = ({ page }: UseEntriesOptions) => {
-  return useQuery({ ...getEntiresOptions({ page }) });
+export const useEntries = ({ page, queryConfig }: UseEntriesOptions) => {
+  return useQuery({ ...getEntiresQueryOptions({ page }), ...queryConfig });
 };

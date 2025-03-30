@@ -10,6 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { InputNumber } from "@/components/ui/input";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,7 +25,7 @@ export default function CreateEntry() {
   const createEntryMutation = useCreateEntry({
     mutationConfig: {
       onSuccess: () => {
-        alert("登録しました");
+        setOpen(false);
       },
     },
   });
@@ -38,114 +39,104 @@ export default function CreateEntry() {
   });
 
   return (
-    <>
-      <FormDialog
-        title="新規登録"
-        description="企業の情報を入力してください"
-        triggerButton={<Button>企業を登録する</Button>}
-        open={open}
-        setOpen={() => setOpen((v) => !v)}
-        onClose={() => form.reset()}
-      >
-        <Form {...form}>
-          <form onSubmit={onSubmit} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>※ 企業名</FormLabel>
-                  <FormControl>
-                    <Input type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="employees"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>社員数</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      {...field}
-                      onBlur={(e) => {
-                        const value = e.target.value
-                          .replace(/,/g, "")
-                          .replace(/(\d)(?=(\d{3})+$)/g, "$1,");
-                        form.setValue("employees", value, {
-                          shouldValidate: true,
-                        });
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="capital"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>資本金</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      {...field}
-                      onBlur={(e) => {
-                        const value = e.target.value
-                          .replace(/,/g, "")
-                          .replace(/(\d)(?=(\d{3})+$)/g, "$1,");
-                        form.setValue("capital", value, {
-                          shouldValidate: true,
-                        });
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="link"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>HP</FormLabel>
-                  <FormControl>
-                    <Input type="url" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="memo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>メモ</FormLabel>
-                  <FormControl>
-                    <Textarea className="h-24" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              className="w-full"
-              type="submit"
-              isLoading={createEntryMutation.isPending}
-            >
-              登録する
-            </Button>
-          </form>
-        </Form>
-      </FormDialog>
-    </>
+    <FormDialog
+      title="新規登録"
+      description="企業の情報を入力してください"
+      triggerButton={<Button>企業を登録する</Button>}
+      open={open}
+      setOpen={() => setOpen((v) => !v)}
+      onClose={() => form.reset()}
+    >
+      <Form {...form}>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>※ 企業名</FormLabel>
+                <FormControl>
+                  <Input type="text" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="employees"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>社員数</FormLabel>
+                <FormControl>
+                  <InputNumber
+                    {...field}
+                    afterBlurCallback={(value) =>
+                      form.setValue("employees", value, {
+                        shouldValidate: true,
+                      })
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="capital"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>資本金</FormLabel>
+                <FormControl>
+                  <InputNumber
+                    {...field}
+                    afterBlurCallback={(value) =>
+                      form.setValue("capital", value, {
+                        shouldValidate: true,
+                      })
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="link"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>HP</FormLabel>
+                <FormControl>
+                  <Input type="url" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="memo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>メモ</FormLabel>
+                <FormControl>
+                  <Textarea className="h-24" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            className="w-full"
+            type="submit"
+            isLoading={createEntryMutation.isPending}
+          >
+            登録する
+          </Button>
+        </form>
+      </Form>
+    </FormDialog>
   );
 }

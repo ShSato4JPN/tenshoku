@@ -39,11 +39,14 @@ type SideNavigationItem = {
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const user = useUser();
   const pathname = usePathname();
-  // const router = useRouter();
 
   const navigation = [
     { name: "ホーム", to: paths.app.root.getHref(), icon: HomeIcon },
-    { name: "エントリー企業", to: paths.app.entry.getHref(), icon: Building2 },
+    {
+      name: "エントリー企業",
+      to: paths.app.entries.getHref(),
+      icon: Building2,
+    },
     { name: "カレンダー", to: paths.app.calendar.getHref(), icon: Calendar },
     { name: "進捗確認", to: paths.app.progress.getHref(), icon: Footprints },
     { name: "メモ", to: paths.app.memo.getHref(), icon: StickyNote },
