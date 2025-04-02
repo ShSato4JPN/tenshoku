@@ -1,7 +1,6 @@
 "use client";
 
 import { useEntry } from "../api/get-entry";
-import UpdateEntry from "./update-entry";
 
 export const EntryView = ({ entryId }: { entryId: string }) => {
   const entryQuery = useEntry({
@@ -35,7 +34,7 @@ export const EntryView = ({ entryId }: { entryId: string }) => {
       </div>
       <div className="mt-6 flex flex-col space-y-16">
         <div className="flex justify-end">
-          <UpdateEntry entryId={entryId} />
+          {/* <UpdateEntry entryId={entryId} /> */}
         </div>
         <div>
           <div className="overflow-hidden bg-white shadow sm:rounded-lg">
